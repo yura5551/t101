@@ -27,7 +27,6 @@ def generate_simple_rules(code_max, n_max, n_generate, log_oper_choice=["and", "
 def generate_stairway_rules(code_max, n_max, n_generate, log_oper_choice=["and", "or", "not"]):
     rules = []
     for j in range(0, n_generate):
-
         log_oper = choice(log_oper_choice)  # not means and-not (neither)
         if n_max < 2:
             n_max = 2
@@ -43,7 +42,7 @@ def generate_stairway_rules(code_max, n_max, n_generate, log_oper_choice=["and",
         }
         rules.append(rule)
     shuffle(rules)
-    return (rules)
+    return rules
 
 
 def generate_ring_rules(code_max, n_max, n_generate, log_oper_choice=["and", "or", "not"]):
