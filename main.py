@@ -146,7 +146,6 @@ def proofs_check(rules_list, facts) -> []:
 
 
 def validate_rules(rules_list):
-    print('.', end="")
     parse_rules = [[], [], []]
     for rule in rules_list:
         if rule['if']:
