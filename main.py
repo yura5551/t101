@@ -94,5 +94,56 @@ def generate_rand_facts(code_max, M):
     return facts
 
 
+def evidence_check(rules_list, facts) -> []:
+    s_list = [[], [], []]  # or and not
+    result = []
+    temp_it = 0
+    # create list or and not
+    for rule in rules_list:
+        if rule != {}:
+            for key in rule['if'].keys():
+                if key == 'or':
+                    s_list[0].append(rule)
+                if key == 'and':
+                    s_list[1].append(rule)
+                if key == 'not':
+                    s_list[2].append(rule)
+    for rule in s_list[0]:  # or
+        for item in rule['if']['or']:
+            size = len(rule['if']['or'])
+            if item in facts:
+                result.append(rule['then'])
+                temp_it = 0
+                break
+            else:
+                temp_it += 1
+                if temp_it == size:
+                    result.append(0)
+                    temp_it = 0
+    for rule in s_list[1]:  # and
+        for item in rule['if']['and']:
+            size = len(rule['if']['and'])
+            if item in facts:
+                temp_it += 1
+        if temp_it == size:
+            result.append(rule['then'])
+            temp_it = 0
+        else:
+            result.append(0)
+            temp_it = 0
+
+    for rule in s_list[2]:  # not
+        for item in rule['if']['not']:
+            size = len(rule['if']['not'])
+            if item not in facts:
+                temp_it += 1
+        if temp_it == size:
+            result.append(rule['then'])
+            temp_it = 0
+        else:
+            result.append(0)
+            temp_it = 0
+    return result
+
 
 
