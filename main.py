@@ -6,7 +6,7 @@ def generate_simple_rules(code_max, n_max, n_generate, log_oper_choice=["and", "
     rules = []
     for j in range(0, n_generate):
 
-        log_oper = choice(log_oper_choice)  # not means and-not (neither)
+        log_oper = choice(log_oper_choice)
         if n_max < 2:
             n_max = 2
         n_items = randint(2, n_max)
@@ -27,7 +27,7 @@ def generate_simple_rules(code_max, n_max, n_generate, log_oper_choice=["and", "
 def generate_stairway_rules(code_max, n_max, n_generate, log_oper_choice=["and", "or", "not"]):
     rules = []
     for j in range(0, n_generate):
-        log_oper = choice(log_oper_choice)  # not means and-not (neither)
+        log_oper = choice(log_oper_choice)
         if n_max < 2:
             n_max = 2
         n_items = randint(2, n_max)
@@ -47,7 +47,7 @@ def generate_stairway_rules(code_max, n_max, n_generate, log_oper_choice=["and",
 
 def generate_ring_rules(code_max, n_max, n_generate, log_oper_choice=["and", "or", "not"]):
     rules = generate_stairway_rules(code_max, n_max, n_generate - 1, log_oper_choice)
-    log_oper = choice(log_oper_choice)  # not means and-not (neither)
+    log_oper = choice(log_oper_choice)
     if n_max < 2:
         n_max = 2
     n_items = randint(2, n_max)
@@ -94,11 +94,10 @@ def generate_rand_facts(code_max, M):
     return facts
 
 
-def evidence_check(rules_list, facts) -> []:
-    s_list = [[], [], []]  # or and not
+def proofs_check(rules_list, facts) -> []:
+    s_list = [[], [], []]
     result = []
     temp_it = 0
-    # create list or and not
     for rule in rules_list:
         if rule != {}:
             for key in rule['if'].keys():
@@ -148,7 +147,7 @@ def evidence_check(rules_list, facts) -> []:
 
 def validate_rules(rules_list):
     print('.', end="")
-    parse_rules = [[], [], []]  # if then validate
+    parse_rules = [[], [], []]
     for rule in rules_list:
         if rule['if']:
             parse_rules[0].append(rule['if'])
@@ -158,7 +157,7 @@ def validate_rules(rules_list):
         for j in range(i + 1, len(rules_list) - 1):
             if i >= j:
                 return 0
-            if parse_rules[1][i] == parse_rules[1][j]:  # if and/or A then B -> if not A then B
+            if parse_rules[1][i] == parse_rules[1][j]:
                 if ('and' in rules_list[i].keys() and 'not' in rules_list[j].keys) or (
                         'and' in rules_list[j].keys() and 'not' in rules_list[i].keys):
                     if parse_rules[0][j]['and'] == parse_rules[0][i]['not'] or parse_rules[0][i]['and'] == \
@@ -172,18 +171,14 @@ def validate_rules(rules_list):
                         rules_list[j].clear()
                         rules_list[i].clear()
             if 'not' in parse_rules[0][i].keys() and 'not' in parse_rules[0][j].keys():
-                # if not A then B -> if not B then A
                 if parse_rules[1][i] in parse_rules[0][j]['not'] and parse_rules[1][j] in \
                         parse_rules[0][i]['not']:
-                    # mutual exclusion
                     rules_list[i].clear()
                     rules_list[j].clear()
                 if parse_rules[1][i] in parse_rules[0][j]['not'] and parse_rules[1][j] not in \
                         parse_rules[0][i]['not']:
-                    # nesting
                     rules_list[i].clear()
                     rules_list[j].clear()
-    # so so slowly ... probably need use set union
     for rule in rules_list:
         if rule != {}:
             parse_rules[2].append(rule)
@@ -211,10 +206,10 @@ def main():
 
     # facts vs rules
     time_start = time()
-    evidence_check(correct_simple, unique_facts)
-    evidence_check(correct_random, unique_facts)
-    evidence_check(correct_stairway, unique_facts)
-    evidence_check(correct_ring, unique_facts)
+    proofs_check(correct_simple, unique_facts)
+    proofs_check(correct_random, unique_facts)
+    proofs_check(correct_stairway, unique_facts)
+    proofs_check(correct_ring, unique_facts)
     check_time = time() - time_start
     print(number_of_rules, "rules check in seconds:", check_time)
 
